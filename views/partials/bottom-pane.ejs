@@ -1,0 +1,132 @@
+  <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bottom-nav">
+        <div class="flex items-center justify-around py-4 px-6">
+            <!-- Profile Button -->
+            <button class="nav-btn flex flex-col items-center space-y-1 p-3 rounded-xl" onclick="toggleNavButton(this, 'profile')">
+            <i class="ri-user-line text-2xl"></i>
+            <span class="text-xs">Profile</span>
+            </button>
+
+            <!-- Boards Button -->
+            <button class="logo-btn w-14 h-14 rounded-2xl flex items-center justify-center" onclick="toggleNavButton(this, 'boards')">
+            <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+            </svg>
+            </button>
+
+            <!-- Upload Button -->
+            <button class="upload-btn flex flex-col items-center space-y-1 p-3 rounded-xl" onclick="toggleNavButton(this, 'upload')">
+            <i class="ri-upload-line text-2xl"></i>
+            <span class="text-xs">Upload</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- JavaScript -->
+    <script>
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('active');
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('mobileMenu');
+            const button = event.target.closest('button');
+            
+            if (!menu.contains(event.target) && !button) {
+                menu.classList.remove('active');
+            }
+        });
+
+        // Toggle pin function with backend integration
+        async function togglePin(button) {
+    const postId = button.getAttribute('data-post-id');
+    const icon = button.querySelector('i');
+    const isPinned = icon.classList.contains('ri-pushpin-fill');
+
+    // Show loading animation
+    icon.className = 'loading';
+
+    try {
+        const response = await fetch(`/save/${postId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        const result = await response.json();
+
+        if (result.pinned) {
+            icon.className = 'ri-pushpin-fill text-lg text-blue-400';
+            button.classList.add('pinned');
+        } else {
+            icon.className = 'ri-pushpin-line text-lg';
+            button.classList.remove('pinned');
+        }
+    } catch (err) {
+        console.error("Error toggling pin:", err);
+        icon.className = isPinned ? 'ri-pushpin-fill text-lg text-blue-400' : 'ri-pushpin-line text-lg';
+    }
+}
+
+
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-20 right-4 z-[60] px-4 py-2 rounded-lg text-white text-sm transition-all duration-300 ${
+                type === 'success' ? 'bg-green-600' : 
+                type === 'error' ? 'bg-red-600' : 'bg-blue-600'
+            }`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function toggleNavButton(button, type) {
+    // Remove active class from all nav buttons
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.upload-btn').forEach(btn => btn.classList.remove('active'));
+
+        // Handle specific button types
+        if (type === 'profile') {
+            window.location.href = "/profile"; // 👈 Redirect to profile
+        } else if (type === 'upload') {
+            window.location.href = "/upload";  // 👈 Redirect to upload
+        } else if (type === 'boards') {
+            if (type === 'boards') {
+        const logoBtn = button; // use the clicked button
+        logoBtn.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            logoBtn.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                logoBtn.style.transform = 'scale(1)';
+            }, 100);
+        }, 100);
+
+        window.location.href = "/board";
+        }
+        }
+
+        // Optionally set active styles (if you want)
+        button.classList.add('active');
+        }
+        // Initialize animations when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Trigger animations for post cards
+            const postCards = document.querySelectorAll('.post-card');
+            postCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.animationDelay = `${index * 0.1}s`;
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>
