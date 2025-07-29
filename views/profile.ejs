@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%=title %></title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="/stylesheets/top-pane.css">
 </head>
@@ -43,7 +44,7 @@
                 <% if (post.caption) { %>
                     <h3 class="text-lg font-bold text-white mt-2"><%= post.caption %></h3>
                 <% } %>
-                <span class="text-sm text-gray-400">@<%= post.user.username %></span>
+                <span class="text-sm text-gray-400">@<%= user.username %></span>
             </div>
             <button 
                 class="pin-btn absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
@@ -110,7 +111,7 @@
             icon.className = 'loading';
             
             try {
-                const response = await fetch(`/save/${postid}`, {
+                const response = await fetch(`/save/${postId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
